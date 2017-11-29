@@ -31,8 +31,6 @@ from itertools import cycle
 from scipy import interp
 #from ipywidgets import FloatProgress
 #from IPython.display import display
-#https://github.com/tqdm/tqdm#latest-conda-release
-from tqdm import trange, tqdm
 from MLJEC_MCTruth_Util import rotate_and_reflect, prepare_df_dict, JetImageGenerator
 import MLJEC_MCTruth_Plot as plotter
 # fix random seed for reproducibility
@@ -43,15 +41,25 @@ def normalize(x):
     # utility function to normalize a tensor by its L2 norm
     return x / (K.sqrt(K.mean(K.square(x))) + 1e-5)
 
-def getInputs():
+def getInputs(base_dir='./'):
     # get input numpy arrays
     inputs = {}
     #inputs['TT'] = glob.glob('output_TT/*job5*.npy')
-    inputs['QCD120'] = glob.glob('output_QCD120/*job0*.npy')
-    inputs['QCD170'] = glob.glob('output_QCD170/*job0*.npy')
-    inputs['QCD300'] = glob.glob('output_QCD300/*job0*.npy')
-    inputs['QCD470'] = glob.glob('output_QCD470/*job0*.npy')
+    inputs['QCD120'] = glob.glob(base_dir+'output_QCD120/*job0*.npy')
+    inputs['QCD170'] = glob.glob(base_dir+'output_QCD170/*job0*.npy')
+    inputs['QCD300'] = glob.glob(base_dir+'output_QCD300/*job0*.npy')
+    inputs['QCD470'] = glob.glob(base_dir+'output_QCD470/*job0*.npy')
     return inputs
+
+def getData(base_dir='./'):
+    # get input numpy arrays
+    inputs = {}
+    #inputs['TT'] = glob.glob('output_TT/*job5*.npy')
+    inputs['QCD120'] = pd.DataFrame(np.load(base_dir+'output_QCD120/params0.npy_job0_file0.npy'))
+    inputs['QCD170'] = pd.DataFrame(np.load(base_dir+'output_QCD170/params0.npy_job0_file0.npy'))
+    inputs['QCD300'] = pd.DataFrame(np.load(base_dir+'output_QCD300/params0.npy_job0_file0.npy'))
+    inputs['QCD470'] = pd.DataFrame(np.load(base_dir+'output_QCD470/params0.npy_job0_file0.npy'))
+    return pd.concat(inputs[f] for f in inputs)
 
 def openFiles(inputs):
     list_params = {}
@@ -137,6 +145,7 @@ def build_conv_model(nx=30, ny=30):
     model.compile(optimizer='adam', loss='mse', metrics=['accuracy','precision','mse','msle'])
     return model
 
+<<<<<<< HEAD
 def fitModels(df_dict_jet, df_dict_cand,nx,ny,generator,verbosity,debug):
     # Run classifier with cross-validation and plot ROC curves
     #kfold = StratifiedKFold(n_splits=2, shuffle=True,  random_state=seed)
@@ -231,6 +240,9 @@ def fitModels(df_dict_jet, df_dict_cand,nx,ny,generator,verbosity,debug):
     return models, histories
 
 def saveModel(model,verbose):
+=======
+def saveModel(model,verbose=False):
+>>>>>>> 0ad49aa5b6868e8dcac802635fb96ffe1eb73730
     # serialize model to JSON
     model_json = model.to_json()
     with open("model.json", "w") as json_file:
@@ -239,17 +251,25 @@ def saveModel(model,verbose):
     model.save_weights("model.h5")
     print("Saved model to disk")
 
-def loadModel(verbose):
+def loadModel(file,verbose=False):
     # load json and create model
+<<<<<<< HEAD
     json_file = open('Models_JR_June16/model_4.json', 'r')
+=======
+    json_file = open(file+'.json', 'r')
+>>>>>>> 0ad49aa5b6868e8dcac802635fb96ffe1eb73730
     loaded_model_json = json_file.read()
     json_file.close()
     loaded_model = model_from_json(loaded_model_json)
     # load weights into new model
+<<<<<<< HEAD
     loaded_model.load_weights("Models_JR_June16/model_4.h5")
+=======
+    loaded_model.load_weights(file+".h5")
+>>>>>>> 0ad49aa5b6868e8dcac802635fb96ffe1eb73730
     if verbose:
         print("Loaded model from disk")
-    return [loaded_model]
+    return loaded_model
 
 ####################
 # Global Variables #

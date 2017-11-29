@@ -22,10 +22,10 @@ def rotate_and_reflect(x,y,w):
     theta = 0
     maxPt = -1
     for ix, iy, iw in zip(x, y, w):
-        dv = np.matrix([[ix],[iy]])-np.matrix([[x.iloc[0]],[y.iloc[0]]])
+        dv = np.matrix([[ix],[iy]])-np.matrix([[x[0]],[y[0]]])
         dR = np.linalg.norm(dv)
         thisPt = iw
-        if dR > 0.35 and thisPt > maxPt:
+        if dR > 0.25 and thisPt > maxPt:
             maxPt = thisPt
             # rotation in eta-phi plane c.f  https://arxiv.org/abs/1407.5675 and https://arxiv.org/abs/1511.05190:
             # theta = -np.arctan2(iy,ix)-np.radians(90)
@@ -34,6 +34,7 @@ def rotate_and_reflect(x,y,w):
             py = iw * np.sin(iy)
             pz = iw * np.sinh(ix)
             theta = np.arctan2(py,pz)+np.radians(90)
+            #print "px,py,pz,theta:",px,py,pz,theta
 
     c, s = np.cos(theta), np.sin(theta)
     R = np.matrix('{} {}; {} {}'.format(c, -s, s, c))
@@ -65,8 +66,25 @@ def rotate_and_reflect(x,y,w):
         ref_x = rot_x
         ref_y = rot_y
 
-    return np.array(ref_x), np.array(ref_y)
+    return (np.array(ref_x), np.array(ref_y))
 
+def rotate_all(x_vec,y_vec,w_vec):
+    x_res=[]
+    y_res=[]
+    i=0
+    mat = zip(x_vec,y_vec,w_vec)
+    print "total:",len(mat)
+    for x,y,w in mat:
+        i+=1
+        if i%1000==0 : 
+            print "i:",i
+        x_temp,y_temp=rotate_and_reflect(x,y,w)
+        x_res.append(x_temp)
+        y_res.append(y_temp)
+        if i>10000 : 
+            break
+
+    return x_res,y_res
 
 def prepare_df_dict(params, verbose):
     # now let's prepare some jet images

@@ -1,13 +1,14 @@
 from sklearn.externals import joblib
 from sklearn.preprocessing import scale
 import matplotlib as mpl
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from keras import backend as K
 from MLJEC_MCTruth_Util import rotate_and_reflect, prepare_df_dict, JetImageGenerator
 from itertools import cycle
-from tqdm import trange, tqdm
 from ipywidgets import FloatProgress
 from IPython.display import display
 from sklearn.metrics import roc_curve, auc
@@ -69,6 +70,7 @@ def plotJet(df_dict_jet, df_dict_cand, process='TT',njets_to_plot=-1, nx=30, ny=
     plt.xlabel('eta')
     plt.ylabel('phi')
     plt.show()
+<<<<<<< HEAD
 
 def plot_JES(conv_model, verbose):
     colors = cycle(['seagreen','cyan', 'indigo', 'yellow', 'blue', 'darkorange', 'red', 'black', 'green', 'brown'])
@@ -202,6 +204,8 @@ def plot_JES(conv_model, verbose):
     plt.legend(loc="upper right")
     plt.savefig("jec_vs_jetetascaled.pdf")
 
+=======
+>>>>>>> 0ad49aa5b6868e8dcac802635fb96ffe1eb73730
     
 def plot_ROC_curves(conv_model):
     colors = cycle(['cyan', 'indigo', 'seagreen', 'yellow', 'blue', 'darkorange', 'red', 'black', 'green', 'brown'])
@@ -346,52 +350,6 @@ def plot_loss(histories):
     plt.legend()
     plt.xlabel('epoch')
     plt.savefig("history.pdf")
-
-'''
-import MLJEC_MCTruth_Plot as plot
-plot.plot_inputs()
-'''
-def plot_inputs():
-    colors = cycle(['seagreen','cyan', 'indigo', 'yellow', 'blue', 'darkorange', 'red', 'black', 'green', 'brown'])
-    #Plot the ROC curves for the training above
-    for cv, color in zip(range(0,1), colors):
-        nbatches = 200
-        jetImageGenerator2 = JetImageGenerator(2)
-        gen = jetImageGenerator2.generator(test=True)
-
-        all_pT = np.array([])
-        all_eta = np.array([])
-        maxval = nbatches
-        for i in tqdm(range(nbatches)):
-            Xp, yp = gen.next()
-            #Do all of the scaling
-            scaler = joblib.load('scaler.pkl')
-            Xp[1] = scaler.transform(Xp[1].reshape(-1,1))
-            #Xp[1] -= 200
-            #Xp[1] /= 100
-            Xp[2] /= np.max(np.abs(2.5),axis=0)
-
-            #all_pT = np.concatenate([all_pT.reshape(-1,1), Xp[1]])
-            all_pT = np.concatenate([all_pT, Xp[1]])
-            all_eta = np.concatenate([all_eta, Xp[2]])
-
-    plt.figure()
-    plt.xlabel('pT')
-    plt.ylabel('Entries')
-    plt.title('Jet pT')
-    bins = np.linspace(-3, 3, 60)
-    plt.hist(all_pT,bins=bins, alpha=1, label='Mixed Sample',normed=True)
-    plt.legend(loc='upper right')
-    plt.savefig("pT.pdf")
-
-    plt.figure()
-    plt.xlabel('eta')
-    plt.ylabel('Entries')
-    plt.title('Jet eta')
-    bins = np.linspace(-1, 1, 20)
-    plt.hist(all_eta,bins=bins, alpha=1, label='Mixed Sample',normed=True)
-    plt.legend(loc='upper right')
-    plt.savefig("eta.pdf")
 
 
 

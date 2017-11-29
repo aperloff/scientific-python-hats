@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+<<<<<<< HEAD
 import glob
 from math import sqrt,tanh
 def raw_data():
@@ -33,6 +34,19 @@ def raw_data():
                    pd_data['QCD120a'],pd_data['QCD170a'],pd_data['QCD300a'],pd_data['QCD470a'],
                    pd_data['QCD120b'],pd_data['QCD170b'],pd_data['QCD300b'],pd_data['QCD470b']])
 
+=======
+from math import sqrt,tanh
+def raw_data():
+    np_data={}
+    np_data['QCD120'] = np.load("/Users/awhitbe1/deepJEC/CMSOpenData/output_QCD120/params0.npy_job0_file0.npy")
+    np_data['QCD170'] = np.load("/Users/awhitbe1/deepJEC/CMSOpenData/output_QCD170/params0.npy_job0_file0.npy")
+    np_data['QCD300'] = np.load("/Users/awhitbe1/deepJEC/CMSOpenData/output_QCD300/params0.npy_job0_file0.npy")
+    np_data['QCD470'] = np.load("/Users/awhitbe1/deepJEC/CMSOpenData/output_QCD470/params0.npy_job0_file0.npy")
+    pd_data={}
+    for sample in np_data :
+        pd_data[sample] = pd.DataFrame(np_data[sample])
+    df = pd.concat([pd_data['QCD120'],pd_data['QCD170'],pd_data['QCD300'],pd_data['QCD470']])
+>>>>>>> 0ad49aa5b6868e8dcac802635fb96ffe1eb73730
     df.reset_index(inplace=True)
         
     df['jetPx'] = map(np.cos,df['jet_phi_ak7'])*df['jet_pt_ak7']
